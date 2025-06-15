@@ -21,11 +21,25 @@
         android:id="@+id/navigation_my_bookings"
         android:name="com.example.booking_lapangan.ui.myBookings.MyBookingsFragment"
         android:label="@string/title_my_bookings"
-        tools:layout="@layout/fragment_my_bookings" />
+        tools:layout="@layout/fragment_my_bookings" >
+        <action
+            android:id="@+id/action_myBookings_to_bookingDetail"
+            app:destination="@id/navigation_booking_detail" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.booking_lapangan.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/navigation_booking_detail"
+        android:name="com.example.booking_lapangan.ui.bookingDetail.BookingDetailFragment"
+        android:label="Detail Pemesanan"
+        tools:layout="@layout/fragment_booking_detail" >
+        <argument
+            android:name="booking"
+            app:argType="com.example.booking_lapangan.api.Booking" />
+    </fragment>
 </navigation>

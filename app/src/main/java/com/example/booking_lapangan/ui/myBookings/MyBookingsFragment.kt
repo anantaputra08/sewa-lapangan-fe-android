@@ -9,9 +9,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.booking_lapangan.R
 import com.example.booking_lapangan.adapter.MyBookingsAdapter
+import com.example.booking_lapangan.ui.bookingDetail.BookingDetailFragment
 
 class MyBookingsFragment : Fragment() {
 
@@ -41,7 +43,13 @@ class MyBookingsFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        bookingsAdapter = MyBookingsAdapter(emptyList())
+        bookingsAdapter = MyBookingsAdapter(emptyList()) { booking ->
+            val bundle = Bundle().apply {
+                putParcelable("booking", booking)
+            }
+            // Panggil aksi yang sudah didefinisikan di mobile_navigation.xml
+            findNavController().navigate(R.id.action_myBookings_to_bookingDetail, bundle)
+        }
         recyclerView.adapter = bookingsAdapter
     }
 

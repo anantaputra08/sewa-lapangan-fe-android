@@ -5,4 +5,5 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_my_bookings">My Bookings</string>
     <string name="title_profile">Profile</string>
+    <string name="title_booking_detail">Booking Detail</string>
 </resources>

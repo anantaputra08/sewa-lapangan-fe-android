@@ -14,10 +14,11 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class MyBookingsAdapter(private var bookings: List<Booking>) :
+class MyBookingsAdapter(private var bookings: List<Booking>,
+                        private val onItemClick: (Booking) -> Unit) :
     RecyclerView.Adapter<MyBookingsAdapter.BookingViewHolder>() {
 
-    class BookingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class BookingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val imageView: ImageView = view.findViewById(R.id.image_view_lapangan)
         private val nameTextView: TextView = view.findViewById(R.id.text_view_lapangan_name)
         private val dateTextView: TextView = view.findViewById(R.id.text_view_date)
@@ -60,6 +61,10 @@ class MyBookingsAdapter(private var bookings: List<Booking>) :
                 .placeholder(R.drawable.ic_dashboard_black_24dp)
                 .error(R.drawable.ic_dashboard_black_24dp)
                 .into(imageView)
+
+            itemView.setOnClickListener {
+                onItemClick(booking)
+            }
         }
     }
 
