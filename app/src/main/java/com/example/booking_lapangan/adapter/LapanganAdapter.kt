@@ -13,10 +13,14 @@ import com.example.booking_lapangan.api.Lapangan
 import java.text.NumberFormat
 import java.util.Locale
 
-class LapanganAdapter(private var lapangans: List<Lapangan>) :
+class LapanganAdapter(
+    private var lapangans: List<Lapangan>,
+    private val onItemClicked: (Lapangan) -> Unit // Listener
+) :
     RecyclerView.Adapter<LapanganAdapter.LapanganViewHolder>() {
 
-    class LapanganViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    // Ubah inner class menjadi non-static untuk akses ke listener
+    inner class LapanganViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val imageView: ImageView = view.findViewById(R.id.image_view_lapangan)
         private val nameTextView: TextView = view.findViewById(R.id.text_view_lapangan_name)
         private val categoryTextView: TextView = view.findViewById(R.id.text_view_category)
@@ -32,16 +36,24 @@ class LapanganAdapter(private var lapangans: List<Lapangan>) :
 
             Glide.with(itemView.context)
                 .load(lapangan.photo)
-                .placeholder(R.drawable.ic_dashboard_black_24dp) // Add a placeholder image
-                .error(R.drawable.ic_dashboard_black_24dp) // Add an error image
+                .placeholder(R.drawable.ic_dashboard_black_24dp)
+                .error(R.drawable.ic_dashboard_black_24dp)
                 .into(imageView)
 
             if (lapangan.is_fully_booked_on_date) {
                 statusTextView.text = "Penuh"
                 statusTextView.background = ContextCompat.getDrawable(itemView.context, R.drawable.status_background_unavailable)
+                itemView.isClickable = false // Tidak bisa diklik jika penuh
+                itemView.alpha = 0.6f
             } else {
                 statusTextView.text = "Tersedia"
                 statusTextView.background = ContextCompat.getDrawable(itemView.context, R.drawable.status_background_available)
+                itemView.isClickable = true
+                itemView.alpha = 1.0f
+                // Set listener di sini
+                itemView.setOnClickListener {
+                    onItemClicked(lapangan)
+                }
             }
         }
     }

@@ -3,6 +3,7 @@ package com.example.booking_lapangan.api
 import android.content.Context
 import android.os.Parcelable
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
 
@@ -141,15 +142,15 @@ data class RegisterRequest(
 
 @Parcelize
 data class User(
-    val id: Int? = null,
+    val id: Int,
     val name: String,
     val email: String,
     val email_verified_at: String? = null,
-    val password: String? = null,
     val role: String,
     val phone: String?,
     val address: String?,
-    val photo: String? = null,
+    @SerializedName("photo_url")
+    val photoUrl: String?,
     val created_at: String? = null,
     val updated_at: String? = null
 ): Parcelable

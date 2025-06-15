@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.booking_lapangan.R
 import com.example.booking_lapangan.adapter.LapanganAdapter
+import com.example.booking_lapangan.api.Lapangan
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -49,8 +50,23 @@ class DashboardFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        lapanganAdapter = LapanganAdapter(emptyList())
+        // Inisialisasi adapter dengan lambda untuk handle klik
+        lapanganAdapter = LapanganAdapter(emptyList()) { lapangan ->
+            // Aksi saat item diklik
+            showSessionBottomSheet(lapangan)
+        }
         recyclerView.adapter = lapanganAdapter
+    }
+
+    private fun showSessionBottomSheet(lapangan: Lapangan) {
+        val selectedDate = dashboardViewModel.selectedDate.value
+        if (selectedDate == null) {
+            Toast.makeText(context, "Silakan pilih tanggal terlebih dahulu", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val bottomSheet = SessionBottomSheetFragment.newInstance(lapangan.id, selectedDate)
+        bottomSheet.show(childFragmentManager, SessionBottomSheetFragment.TAG)
     }
 
     private fun setupDatePicker() {
@@ -69,6 +85,8 @@ class DashboardFragment : Fragment() {
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
             )
+            // Batasi tanggal agar tidak bisa memilih tanggal yang sudah lewat
+            datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
             datePickerDialog.show()
         }
     }
