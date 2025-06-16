@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="user_roles">
+        <item>Admin</item>
+        <item>User</item>
+    </string-array>
+
+    <string-array name="booking_statuses">
+        <item>Pending</item>
+        <item>Confirmed</item>
+        <item>Completed</item>
+        <item>Cancelled</item>
+    </string-array>
+
+    <string-array name="payment_statuses">
+        <item>Unpaid</item>
+        <item>Paid</item>
+        <item>Refunded</item>
+    </string-array>
+</resources>

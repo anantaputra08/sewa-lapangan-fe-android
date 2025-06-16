@@ -41,6 +41,20 @@ class SessionManager(context: Context) {
     }
 
     /**
+     * Mengambil peran pengguna.
+     * Jika pengguna tidak ditemukan, mengembalikan null.
+     */
+    fun fetchUserRole(): String? {
+        val userJson = prefs.getString(USER_DETAILS, null)
+        return if (userJson != null) {
+            val user = gson.fromJson(userJson, User::class.java)
+            user.role
+        } else {
+            null
+        }
+    }
+
+    /**
      * Mengambil detail pengguna.
      */
     fun fetchUserDetails(): User? {

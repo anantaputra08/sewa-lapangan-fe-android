@@ -42,4 +42,16 @@
             android:name="booking"
             app:argType="com.example.booking_lapangan.api.Booking" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_admin_user"
+        android:name="com.example.booking_lapangan.ui.admin.user.AdminUserFragment"
+        android:label="Pengguna"
+        tools:layout="@layout/fragment_admin_user" />
+
+    <fragment
+        android:id="@+id/navigation_admin_booking"
+        android:name="com.example.booking_lapangan.ui.admin.bookings.AdminBookingFragment"
+        android:label="Pemesanan"
+        tools:layout="@layout/fragment_admin_booking" />
 </navigation>

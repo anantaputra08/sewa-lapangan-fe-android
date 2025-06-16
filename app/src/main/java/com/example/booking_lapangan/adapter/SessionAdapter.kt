@@ -20,9 +20,7 @@ class SessionAdapter(
 
     private val selectedSessionIds = mutableSetOf<Int>()
 
-    fun getSelectedSessions(): Set<Int> {
-        return selectedSessionIds
-    }
+    fun getSelectedSessions(): Set<Int> = selectedSessionIds
 
     fun updateData(newSessions: List<Session>) {
         sessions = newSessions
@@ -35,6 +33,7 @@ class SessionAdapter(
         val statusTextView: TextView = view.findViewById(R.id.text_view_session_status)
         val priceTextView: TextView = view.findViewById(R.id.text_view_session_price)
         val layout: LinearLayout = view.findViewById(R.id.linear_layout_session)
+        val cardView: View = view.findViewById(R.id.card_view_session)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SessionViewHolder {
@@ -51,16 +50,16 @@ class SessionAdapter(
         format.maximumFractionDigits = 0
         holder.priceTextView.text = format.format(session.price)
 
-
         if (session.is_available) {
             holder.statusTextView.text = "Tersedia"
             holder.statusTextView.setTextColor(ContextCompat.getColor(holder.itemView.context, android.R.color.holo_green_dark))
             holder.itemView.isClickable = true
 
+            // highlight CardView, not LinearLayout
             if (selectedSessionIds.contains(session.id)) {
-                holder.layout.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, android.R.color.darker_gray))
+                holder.cardView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, android.R.color.darker_gray))
             } else {
-                holder.layout.setBackgroundColor(Color.WHITE)
+                holder.cardView.setBackgroundColor(Color.WHITE)
             }
 
             holder.itemView.setOnClickListener {
@@ -75,7 +74,7 @@ class SessionAdapter(
         } else {
             holder.statusTextView.text = "Dipesan"
             holder.statusTextView.setTextColor(Color.RED)
-            holder.layout.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, android.R.color.background_light))
+            holder.cardView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, android.R.color.background_light))
             holder.itemView.isClickable = false
         }
     }

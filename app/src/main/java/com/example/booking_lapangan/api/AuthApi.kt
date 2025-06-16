@@ -140,11 +140,27 @@ data class RegisterRequest(
     val address: String? = null
 )
 
+//@Parcelize
+//data class User(
+//    val id: Int,
+//    val name: String?,
+//    val email: String?,
+//    val email_verified_at: String? = null,
+//    val role: String,
+//    val phone: String?,
+//    val address: String?,
+//    @SerializedName("photo_url")
+//    val photoUrl: String?,
+//    val created_at: String? = null,
+//    val updated_at: String? = null
+//): Parcelable
+
+// Data class untuk User - TAMBAHKAN INI JIKA BELUM ADA
 @Parcelize
 data class User(
     val id: Int,
-    val name: String,
-    val email: String,
+    val name: String?,
+    val email: String?,
     val email_verified_at: String? = null,
     val role: String,
     val phone: String?,
@@ -153,4 +169,31 @@ data class User(
     val photoUrl: String?,
     val created_at: String? = null,
     val updated_at: String? = null
-): Parcelable
+) : Parcelable {
+    // Override hashCode untuk menangani nullable fields
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + name.hashCode()
+        result = 31 * result + email.hashCode()
+        result = 31 * result + (phone?.hashCode() ?: 0)
+        result = 31 * result + (created_at?.hashCode() ?: 0)
+        result = 31 * result + (updated_at?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as User
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (email != other.email) return false
+        if (phone != other.phone) return false
+        if (created_at != other.created_at) return false
+        if (updated_at != other.updated_at) return false
+
+        return true
+    }
+}

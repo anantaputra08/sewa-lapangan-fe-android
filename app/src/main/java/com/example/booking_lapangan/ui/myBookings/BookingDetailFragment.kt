@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -24,7 +23,6 @@ class BookingDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Ambil data booking dari arguments
         arguments?.let {
             booking = it.getParcelable("booking")
         }
@@ -34,29 +32,19 @@ class BookingDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate layout untuk fragment ini
         return inflater.inflate(R.layout.fragment_booking_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupToolbar(view)
-
-        // Tampilkan data jika booking tidak null
-        booking?.let {
-            populateView(view, it)
-        }
+        booking?.let { populateView(view, it) }
     }
 
     private fun setupToolbar(view: View) {
         val toolbar: Toolbar = view.findViewById(R.id.toolbar)
-        // Atur judul dan ikon navigasi langsung pada Toolbar.
         toolbar.title = "Detail Pemesanan"
-        // Pastikan Anda memiliki drawable ic_baseline_arrow_back_24 atau ganti dengan ikon Anda.
         toolbar.navigationIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_arrow_back_24)
-
-        // Gunakan NavController untuk menangani tombol kembali
         toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
@@ -70,34 +58,35 @@ class BookingDetailFragment : Fragment() {
         val priceTextView: TextView = view.findViewById(R.id.text_view_price_detail)
 
         Glide.with(this)
-            .load(booking.lapangan.photo)
+            .load(booking.lapangan.photo ?: booking.lapangan.photo_url)
             .into(imageView)
 
-        nameTextView.text = booking.lapangan.name
+        nameTextView.text = booking.lapangan.name ?: "-"
 
-        try {
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("in", "ID"))
-            val date = inputFormat.parse(booking.date)
-            dateTextView.text = outputFormat.format(date!!)
-        } catch (e: Exception) {
-            dateTextView.text = booking.date
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("in", "ID"))
+        val dateRaw = booking.date
+        dateTextView.text = if (!dateRaw.isNullOrEmpty()) {
+            try {
+                val dateObj = inputFormat.parse(dateRaw)
+                outputFormat.format(dateObj!!)
+            } catch (e: Exception) {
+                dateRaw
+            }
+        } else {
+            "-"
         }
 
-        timeTextView.text = "${booking.start_time} - ${booking.end_time}"
+        timeTextView.text = "${booking.start_time ?: "-"} - ${booking.end_time ?: "-"}"
 
         val format = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
         format.maximumFractionDigits = 0
-        priceTextView.text = format.format(booking.total_price.toDoubleOrNull() ?: 0.0)
+        val priceValue = booking.total_price?.toDoubleOrNull() ?: 0.0
+        priceTextView.text = format.format(priceValue)
     }
 
     companion object {
         private const val ARG_BOOKING = "arg_booking"
-
-        /**
-         * Factory method untuk membuat instance baru dari fragment ini
-         * dengan membawa data booking.
-         */
         @JvmStatic
         fun newInstance(booking: Booking) =
             BookingDetailFragment().apply {

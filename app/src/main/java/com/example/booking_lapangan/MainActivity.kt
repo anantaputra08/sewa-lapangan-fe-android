@@ -30,14 +30,45 @@ class MainActivity : AppCompatActivity() {
 
         val navView: BottomNavigationView = binding.navView
 
+        val userRole = sessionManager.fetchUserRole()
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_dashboard, R.id.navigation_my_bookings, R.id.navigation_profile
+
+        val appBarConfiguration: AppBarConfiguration
+
+        if (userRole.equals("admin", ignoreCase = true)) {
+            // Muat menu untuk admin
+            navView.menu.clear() // Hapus menu default jika ada
+            navView.inflateMenu(R.menu.admin_bottom_nav_menu)
+
+            // Atur start destination untuk admin
+            val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
+            navGraph.setStartDestination(R.id.navigation_admin_user)
+            navController.graph = navGraph
+
+            // Konfigurasi top-level destinations untuk admin
+            appBarConfiguration = AppBarConfiguration(
+                setOf(
+//                    R.id.navigation_admin_dashboard,
+                    R.id.navigation_admin_user, R.id.navigation_profile
+                )
             )
-        )
+        } else {
+            // Muat menu untuk pengguna biasa (default)
+            navView.menu.clear()
+            navView.inflateMenu(R.menu.bottom_nav_menu)
+
+            // Atur start destination untuk user
+            val navGraph = navController.navInflater.inflate(R.navigation.mobile_navigation)
+            navGraph.setStartDestination(R.id.navigation_dashboard)
+            navController.graph = navGraph
+
+            // Konfigurasi top-level destinations untuk user
+            appBarConfiguration = AppBarConfiguration(
+                setOf(
+                    R.id.navigation_dashboard, R.id.navigation_my_bookings, R.id.navigation_profile
+                )
+            )
+        }
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }

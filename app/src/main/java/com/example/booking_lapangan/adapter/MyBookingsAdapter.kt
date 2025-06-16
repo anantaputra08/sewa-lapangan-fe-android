@@ -31,23 +31,31 @@ class MyBookingsAdapter(private var bookings: List<Booking>,
             // Format Tanggal dan Waktu
             val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val outputFormat = SimpleDateFormat("dd MMM yyyy", Locale("in", "ID"))
-            try {
-                val date = inputFormat.parse(booking.date)
-                val formattedDate = outputFormat.format(date!!)
-                dateTextView.text = "$formattedDate, ${booking.start_time} - ${booking.end_time}"
-            } catch (e: Exception) {
-                dateTextView.text = "${booking.date}, ${booking.start_time} - ${booking.end_time}"
+            val startTime = booking.start_time ?: "-"
+            val endTime = booking.end_time ?: "-"
+            val dateRaw = booking.date
+            dateTextView.text = if (!dateRaw.isNullOrEmpty()) {
+                try {
+                    val date = inputFormat.parse(dateRaw)
+                    val formattedDate = outputFormat.format(date!!)
+                    "$formattedDate, $startTime - $endTime"
+                } catch (e: Exception) {
+                    "$dateRaw, $startTime - $endTime"
+                }
+            } else {
+                "-, $startTime - $endTime"
             }
-
 
             // Format Harga
             val format = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
             format.maximumFractionDigits = 0
-            priceTextView.text = format.format(booking.total_price.toDoubleOrNull() ?: 0.0)
+            val priceValue = booking.total_price?.toDoubleOrNull() ?: 0.0
+            priceTextView.text = format.format(priceValue)
 
             // Status
-            statusTextView.text = booking.status.replaceFirstChar { it.uppercase() }
-            val statusBg = when (booking.status.lowercase()) {
+            val status = booking.status ?: "-"
+            statusTextView.text = status.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+            val statusBg = when (status.lowercase(Locale.getDefault())) {
                 "confirmed" -> R.drawable.status_background_available
                 "pending" -> R.drawable.status_background_pending
                 "cancelled" -> R.drawable.status_background_unavailable
@@ -57,7 +65,7 @@ class MyBookingsAdapter(private var bookings: List<Booking>,
 
             // Gambar
             Glide.with(itemView.context)
-                .load(booking.lapangan.photo)
+                .load(booking.lapangan.photo ?: booking.lapangan.photo_url)
                 .placeholder(R.drawable.ic_dashboard_black_24dp)
                 .error(R.drawable.ic_dashboard_black_24dp)
                 .into(imageView)

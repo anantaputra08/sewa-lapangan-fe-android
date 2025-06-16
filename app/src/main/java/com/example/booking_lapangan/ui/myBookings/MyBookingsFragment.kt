@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.booking_lapangan.R
 import com.example.booking_lapangan.adapter.MyBookingsAdapter
+import com.example.booking_lapangan.api.Booking
 import com.example.booking_lapangan.ui.bookingDetail.BookingDetailFragment
 
 class MyBookingsFragment : Fragment() {
@@ -44,13 +45,27 @@ class MyBookingsFragment : Fragment() {
 
     private fun setupRecyclerView() {
         bookingsAdapter = MyBookingsAdapter(emptyList()) { booking ->
-            val bundle = Bundle().apply {
-                putParcelable("booking", booking)
+            // Validasi booking sebelum navigasi
+            if (isBookingValid(booking)) {
+                val bundle = Bundle().apply {
+                    putParcelable("booking", booking)
+                }
+                findNavController().navigate(R.id.action_myBookings_to_bookingDetail, bundle)
+            } else {
+                Toast.makeText(context, "Data booking tidak lengkap", Toast.LENGTH_SHORT).show()
             }
-            // Panggil aksi yang sudah didefinisikan di mobile_navigation.xml
-            findNavController().navigate(R.id.action_myBookings_to_bookingDetail, bundle)
         }
         recyclerView.adapter = bookingsAdapter
+    }
+
+    private fun isBookingValid(booking: Booking): Boolean {
+        return try {
+            // Test apakah booking bisa di-hash tanpa error
+            booking.hashCode()
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private fun setupObservers() {

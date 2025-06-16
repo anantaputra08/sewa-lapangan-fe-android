@@ -106,7 +106,7 @@ class ProfileFragment : Fragment() {
             .setPositiveButton("Simpan") { _, _ ->
                 val profileData = mutableMapOf<String, String>()
                 profileData["name"] = nameEditText.text.toString()
-                profileData["email"] = currentUser.email // Email tidak bisa diubah
+                profileData["email"] = currentUser.email ?: "Email tidak tersedia"
                 profileData["phone"] = phoneEditText.text.toString()
                 profileData["address"] = currentUser.address ?: "" // Tambahkan alamat jika ada
 
